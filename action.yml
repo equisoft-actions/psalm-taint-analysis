@@ -1,0 +1,29 @@
+name: Psalm Taint analysis
+description: |
+  Run psalm with --taint-analysis and upload sarif file artifact
+
+inputs:
+  report-retention-days:
+    description: "Duration in days to preserve reports."
+    required: false
+    default: "5"
+  working-directory:
+    description: "Workflow working directory"
+    default: '.'
+    required: false
+
+runs:
+  using: "composite"
+  steps:
+    - name: Taint analysis
+      working-directory: ${{ inputs.working-directory }}
+      shell: bash
+      run: ./vendor/bin/psalm --taint-analysis --report=psalm-taint-analysis.sarif
+
+    - name: Store results.sarif
+      uses: actions/upload-artifact@v2
+      if: "!cancelled()"
+      with:
+        name: psalm-taint-analysis.sarif
+        path: ${{ inputs.working-directory }}/psalm-taint-analysis.sarif
+        retention-days: ${{ inputs.report-retention-days }}
