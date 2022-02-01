@@ -11,6 +11,23 @@ inputs:
     description: "Workflow working directory"
     default: '.'
     required: false
+  defectdojo-publish:
+    description: "Publish sarif report to defectdojo"
+    required: false
+    default: 'false'
+  defectdojo-url:
+    description: "DefectDojo URL"
+    required: false
+    default: ''
+  defectdojo-token:
+    description: "DefectDojo Token"
+    required: false
+    default: ''
+  defectdojo-engagement:
+    description: "DefectDojo Engagement name or id"
+    required: false
+    default: ''
+
 
 runs:
   using: "composite"
@@ -27,3 +44,21 @@ runs:
         name: psalm-taint-analysis.sarif
         path: ${{ inputs.working-directory }}/psalm-taint-analysis.sarif
         retention-days: ${{ inputs.report-retention-days }}
+
+    - name: Publish report
+      if: inputs.defectdojo-publish == 'true'
+      id: import-scan
+      uses: ivanamat/defectdojo-import-scan@v1
+      with:
+        token: ${{ inputs.defectdojo-token }}
+        defectdojo_url: ${{ inputs.defectdojo-url }}
+        file: ${{ inputs.working-directory }}/psalm-taint-analysis.sarif
+        scan_type: SARIF
+        engagement: ${{ inputs.defectdojo-engagement }}
+
+    - name: Show response
+      if: inputs.defectdojo-publish == 'true'
+      shell: bash
+      run: |
+        set -e
+        printf '%s\n' '${{ steps.import-scan.outputs.response }}'
