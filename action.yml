@@ -38,7 +38,7 @@ runs:
       run: ./vendor/bin/psalm --taint-analysis --report=psalm-taint-analysis.sarif
 
     - name: Store results.sarif
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       if: "!cancelled()"
       with:
         name: psalm-taint-analysis.sarif
