@@ -25,7 +25,7 @@ runs:
       run: ./vendor/bin/psalm --taint-analysis --report=psalm-taint-analysis.sarif
 
     - name: Store results.sarif
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       if: "!cancelled()"
       with:
         name: psalm-taint-analysis.sarif
@@ -33,7 +33,7 @@ runs:
         retention-days: ${{ inputs.report-retention-days }}
 
     - name: Publish report
-      uses: github/codeql-action/upload-sarif@v2
+      uses: github/codeql-action/upload-sarif@v3
       with:
         category: ${{ inputs.report-name }}
         sarif_file: ${{ inputs.working-directory }}/psalm-taint-analysis.sarif
