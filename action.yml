@@ -3,6 +3,9 @@ description: |
   Run psalm with --taint-analysis and upload sarif file artifact
 
 inputs:
+  memory-limit:
+    description: Memory limit for analysis
+    required: false
   report-name:
     description: "Report name"
     required: false
@@ -22,7 +25,14 @@ runs:
     - name: Taint analysis
       working-directory: ${{ inputs.working-directory }}
       shell: bash
-      run: ./vendor/bin/psalm --taint-analysis --report=psalm-taint-analysis.sarif
+      run: |
+        command_string=(./vendor/bin/psalm --taint-analysis --report=psalm-taint-analysis.sarif)
+        if [ -n "${{ inputs.memory-limit }}" ]
+        then
+          command_string+=(--memory-limit="${{ inputs.memory-limit }}")
+        fi
+        echo "Command: " "${command_string[@]}"
+        ${command_string[@]}
 
     - name: Store results.sarif
       uses: actions/upload-artifact@v4
