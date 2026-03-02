@@ -35,7 +35,7 @@ runs:
         ${command_string[@]}
 
     - name: Store results.sarif
-      uses: actions/upload-artifact@v6
+      uses: actions/upload-artifact@v7
       if: "!cancelled()"
       with:
         name: psalm-taint-analysis.sarif
