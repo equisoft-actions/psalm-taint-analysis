@@ -43,7 +43,7 @@ runs:
         retention-days: ${{ inputs.report-retention-days }}
 
     - name: Publish report
-      uses: github/codeql-action/upload-sarif@cdf488f595d80d6e07e03d4674febd5ab45fa938 # v4
+      uses: github/codeql-action/upload-sarif@2892aa5e19bbd11bc0cff5427e3b750a04d9e3c2 # v4
       with:
         category: ${{ inputs.report-name }}
         sarif_file: ${{ inputs.working-directory }}/psalm-taint-analysis.sarif
